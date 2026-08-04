@@ -1,0 +1,45 @@
+evaluation_set,model,metric,value,unit,notes
+fixed_human_1000,original_zhv3,human_text_accuracy,89.10,percent,Original zh-v3 baseline on fixed human-only test set.
+fixed_human_1000,original_zhv3,human_false_positive_rate,10.90,percent,Human text predicted as AI.
+fixed_ai_1000,original_zhv3,ai_recall,90.50,percent,AI text correctly detected.
+fixed_mixed_2000,original_zhv3,mixed_accuracy,89.80,percent,Fixed mixed test set.
+validation,glm_single_model_finetune,f1,91.16,percent,Only confirmed validation metric for this experiment.
+validation,multimodel_v2_1_to_5,accuracy,95.00,percent,Validation metric; not directly comparable with external test metrics.
+validation,multimodel_v2_1_to_5,precision,95.48,percent,Validation metric; not directly comparable with external test metrics.
+validation,multimodel_v2_1_to_5,recall,98.67,percent,Validation metric; not directly comparable with external test metrics.
+validation,multimodel_v2_1_to_5,f1,97.05,percent,Validation metric; not directly comparable with external test metrics.
+fixed_human_1000,multimodel_v2_1_to_5,human_false_positive_rate,15.50,percent,External fixed test result.
+fixed_ai_1000,multimodel_v2_1_to_5,ai_recall,97.30,percent,External fixed test result.
+fixed_mixed_2000,multimodel_v2_1_to_5,mixed_accuracy,90.90,percent,External fixed test result.
+validation,multimodel_v2_balance,accuracy,89.33,percent,Validation metric for final selected model.
+validation,multimodel_v2_balance,precision,86.42,percent,Validation metric for final selected model.
+validation,multimodel_v2_balance,recall,93.33,percent,Validation metric for final selected model.
+validation,multimodel_v2_balance,f1,89.74,percent,Validation metric for final selected model.
+fixed_human_1000,multimodel_v2_balance,human_text_accuracy,91.60,percent,Fixed human-only test result for final selected model.
+fixed_human_1000,multimodel_v2_balance,human_false_positive_rate,8.40,percent,Fixed human-only test result for final selected model.
+fixed_ai_1000,multimodel_v2_balance,ai_recall,94.10,percent,Fixed AI-only test result for final selected model.
+fixed_mixed_2000,multimodel_v2_balance,mixed_accuracy,92.85,percent,Fixed mixed test result for final selected model.
+hc3_zh_7696,dataset,human_text_count,4481,count,Public HC3 Chinese evaluation subset composition.
+hc3_zh_7696,dataset,ai_text_count,3215,count,Public HC3 Chinese evaluation subset composition.
+hc3_zh_7696,dataset,total_count,7696,count,4481 human + 3215 AI.
+hc3_zh_7696,original_model,overall_accuracy,89.54,percent,Original model result on HC3 Chinese 7696-row evaluation.
+hc3_zh_7696,original_model,ai_detection_rate,91.14,percent,AI detection rate on HC3 Chinese 7696-row evaluation.
+hc3_zh_7696,original_model,human_false_positive_rate,11.60,percent,Human false positive rate on HC3 Chinese 7696-row evaluation.
+hc3_zh_7696,multimodel_v2_balance,overall_accuracy,91.84,percent,Final model result on HC3 Chinese 7696-row evaluation.
+hc3_zh_7696,multimodel_v2_balance,ai_detection_rate,92.78,percent,Final model result on HC3 Chinese 7696-row evaluation.
+hc3_zh_7696,multimodel_v2_balance,human_false_positive_rate,8.84,percent,Final model result on HC3 Chinese 7696-row evaluation.
+hc3_zh_7696,change_vs_original,overall_accuracy_change,2.30,percentage_point,Final model minus original model.
+hc3_zh_7696,change_vs_original,ai_detection_rate_change,1.64,percentage_point,Final model minus original model.
+hc3_zh_7696,change_vs_original,human_false_positive_rate_change,-2.76,percentage_point,Final model minus original model.
+hc3_zh_7696,change_vs_original,ai_correct_detections_increase,53,count,Increase in correctly detected AI samples.
+hc3_zh_7696,change_vs_original,human_false_positives_reduction,124,approx_count,Approximate reduction inferred from rounded rates and 4481 human samples.
+onnx_consistency,AIGC_text_detector_zhv3_cv2_onnx,max_abs_logits_diff,1.43e-6,absolute_error,PyTorch vs ONNX comparison.
+onnx_consistency,AIGC_text_detector_zhv3_cv2_onnx,max_abs_prob_diff,2.31e-7,absolute_error,PyTorch vs ONNX comparison.
+onnx_consistency,AIGC_text_detector_zhv3_cv2_onnx,pred_label_consistency,100,percent,PyTorch and ONNX predicted labels matched in the consistency check.
+fixed_human_1000,AIGC_text_detector_zhv3_cv2_onnx,human_text_accuracy,91.60,percent,ONNX fixed human-only test result.
+fixed_human_1000,AIGC_text_detector_zhv3_cv2_onnx,human_false_positive_rate,8.40,percent,ONNX fixed human-only test result.
+fixed_ai_1000,AIGC_text_detector_zhv3_cv2_onnx,ai_recall,94.10,percent,ONNX fixed AI-only test result.
+fixed_mixed_2000,AIGC_text_detector_zhv3_cv2_onnx,mixed_accuracy,92.85,percent,ONNX fixed mixed test result.
+hc3_zh_7696_by_source,multimodel_v2_balance,nlpcc_dbqa_overall_accuracy,76.55,percent,Error analysis by source category.
+hc3_zh_7696_by_source,multimodel_v2_balance,nlpcc_dbqa_human_false_positive_rate,32.38,percent,Error analysis by source category.
+hc3_zh_7696_by_source,multimodel_v2_balance,nlpcc_dbqa_ai_recall,81.83,percent,Error analysis by source category.

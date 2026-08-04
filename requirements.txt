@@ -1,0 +1,13 @@
+numpy
+pandas
+torch
+transformers
+onnx
+onnxruntime
+tqdm
+nltk
+tensorboard
+regex
+huggingface-hub
+tokenizers
+seaborn

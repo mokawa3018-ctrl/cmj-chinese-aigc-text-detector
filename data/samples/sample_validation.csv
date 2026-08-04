@@ -1,0 +1,5 @@
+pair_id,sample_id,source_id,question,answer,label,generator,source,target_char_count,dataset_role
+SYN-P009,SYN-H-009,SRC-009,如何整理一张凌乱的书桌？,整理书桌可以先把不用的东西拿走，再把常用物品放到顺手的位置。最后留出一块空地方，做事会轻松很多。,0,synthetic_human,开放问答,48,validation
+SYN-P009,SYN-A-009,SRC-009,如何整理一张凌乱的书桌？,整理凌乱书桌时，可以先分类物品，再清理无用杂物，并按照使用频率安排位置。保持桌面留白有助于提升效率。,1,synthetic_ai,开放问答,50,validation
+SYN-P010,SYN-H-010,SRC-010,为什么睡前少看手机？,睡前一直看手机容易让人越看越精神，也可能拖晚睡觉时间。把手机放远一点，通常更容易安静下来。,0,synthetic_human,心理,45,validation
+SYN-P010,SYN-A-010,SRC-010,为什么睡前少看手机？,睡前减少手机使用有助于降低信息刺激，避免影响入睡节奏。建立固定的睡前习惯，可以改善休息质量。,1,synthetic_ai,心理,46,validation
