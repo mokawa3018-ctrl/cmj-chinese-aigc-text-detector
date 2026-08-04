@@ -41,7 +41,8 @@ aigc-text-detection-evaluation/
 │  ├─ check_onnx.py
 │  ├─ export_onnx.py
 │  ├─ predict_csv.py
-│  └─ predict_csv_onnx.py
+│  ├─ predict_csv_onnx.py
+│  └─ train_from_config.py
 ├─ tests/
 ├─ LICENSE
 ├─ THIRD_PARTY_NOTICES.md
@@ -52,6 +53,7 @@ aigc-text-detection-evaluation/
 说明：
 
 - `src/training/` 是基于上游 Apache-2.0 代码修改版整理出的真实训练链路。
+- `src/train_from_config.py` 将 JSON 实验配置转换为真实训练命令，支持 `--dry-run`。
 - `data/samples/` 只包含全新合成示例数据，不包含真实训练集。
 - `results/` 只包含聚合指标，不包含逐条预测结果。
 - 模型权重和 ONNX 文件不进入普通 Git 仓库。
@@ -167,9 +169,19 @@ python src/predict_csv_onnx.py \
 
 ## 模型训练
 
-真实实验训练链路整理在 `src/training/`。该训练入口使用命令行参数，不直接读取 JSON 配置文件。
+真实实验训练链路整理在 `src/training/`。训练模块本身使用命令行参数；`src/train_from_config.py` 可以读取 JSON 配置并转换为真实训练参数。
 
-`configs/train_multimodel_v2_balance.example.json` 用于记录最终 1:1 均衡实验参数，当前训练入口不会直接读取这个 JSON 文件。
+`configs/train_multimodel_v2_balance.example.json` 用于记录最终 1:1 均衡实验参数。先用 `--dry-run` 预览命令，不会启动训练：
+
+```bash
+python src/train_from_config.py --config configs/train_multimodel_v2_balance.example.json --dry-run
+```
+
+Windows PowerShell 单行：
+
+```powershell
+python src/train_from_config.py --config configs/train_multimodel_v2_balance.example.json --dry-run
+```
 
 公开路径示例命令：
 
@@ -182,15 +194,20 @@ python src/training/train.py \
   --max-sequence-length 512 \
   --learning-rate 2e-5 \
   --weight-decay 0.01 \
+  --seed 0 \
   --local-model models/base \
   --model-name AIGC_detector_zhv3 \
-  --local-data data/private \
-  --train-data-file train.csv \
-  --val-data-file validation.csv \
-  --val_file1 validation.csv \
+  --local-data . \
+  --train-data-file data/private/train.csv \
+  --val-data-file data/private/validation.csv \
+  --val_file1 data/private/validation.csv \
   --data-name save \
   --mode original_single \
   --aug_min_length 0 \
+  --lamb 0.4 \
+  --pu_type dual_softmax_dyn_dtrun \
+  --prior 0.2 \
+  --len_thres 55 \
   --clean 0 \
   --quick_val 0 \
   --log-dir outputs/multimodel_v2_balance
