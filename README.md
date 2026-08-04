@@ -336,7 +336,34 @@ AI召回率约：81.83%
 
 ## 模型下载
 
-模型权重和 ONNX 文件正在进行许可证及发布条件核对，确认后将提供下载地址。
+模型权重与 ONNX 版本已发布至 Hugging Face：
+
+https://huggingface.co/mokawa3018/cmj-chinese-aigc-text-detector
+
+下载完整模型：
+
+```bash
+hf download mokawa3018/cmj-chinese-aigc-text-detector \
+  --local-dir models/cmj-chinese-aigc-text-detector
+```
+
+PyTorch 加载：
+
+```python
+from transformers import AutoTokenizer, AutoModelForSequenceClassification
+
+repo_id = "mokawa3018/cmj-chinese-aigc-text-detector"
+tokenizer = AutoTokenizer.from_pretrained(repo_id)
+model = AutoModelForSequenceClassification.from_pretrained(repo_id)
+```
+
+说明：
+
+- PyTorch 权重位于模型仓库根目录。
+- ONNX 模型位于 `onnx/model.onnx`。
+- 标签定义为 `label 0 = human`，`label 1 = AI`。
+- 模型文件不直接进入 GitHub 普通 Git 仓库。
+- 使用前请阅读模型卡中的许可证、数据来源、局限性和使用边界说明。
 
 模型文件不会直接提交到普通 Git 仓库。`.gitignore` 已排除常见权重文件和本地发布候选目录。
 
