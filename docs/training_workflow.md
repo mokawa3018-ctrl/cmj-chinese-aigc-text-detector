@@ -192,4 +192,6 @@ The following items could not be fully confirmed from local files alone:
 
 ## Reproducibility Note
 
-The public repository currently records the real experiment parameters, but it does not yet include an independent public training script. Therefore, `configs/train_multimodel_v2_balance.example.json` is a faithful configuration record, not a directly runnable training command at this stage.
+The public repository records the real experiment parameters in `configs/train_multimodel_v2_balance.example.json`. The helper `src/train_from_config.py` reads that JSON, validates the expected data contract, and converts it into the real `src/training/train.py` command-line arguments.
+
+The example config still uses public placeholder paths. Users must provide a compatible base model and private train/validation CSV files before running non-dry-run training.

@@ -122,11 +122,17 @@ Hugging Face save_pretrained saving
 TensorBoard logging
 ```
 
-## JSON Config Status
+## JSON Config Launcher
 
 The example config at `configs/train_multimodel_v2_balance.example.json` records the final balanced experiment parameters with public placeholder paths.
 
-The copied training entry currently does not read JSON config files directly. It uses command-line arguments.
+The copied training entry still uses command-line arguments. The public helper `src/train_from_config.py` reads the JSON config, validates the expected data contract, and converts the fields into the real `train.py` arguments.
+
+Dry-run example:
+
+```bash
+python src/train_from_config.py --config configs/train_multimodel_v2_balance.example.json --dry-run
+```
 
 Equivalent public-path example command:
 
@@ -139,15 +145,20 @@ python src/training/train.py \
   --max-sequence-length 512 \
   --learning-rate 2e-5 \
   --weight-decay 0.01 \
+  --seed 0 \
   --local-model models/base \
   --model-name AIGC_detector_zhv3 \
-  --local-data data/private \
-  --train-data-file train.csv \
-  --val-data-file validation.csv \
-  --val_file1 validation.csv \
+  --local-data . \
+  --train-data-file data/private/train.csv \
+  --val-data-file data/private/validation.csv \
+  --val_file1 data/private/validation.csv \
   --data-name save \
   --mode original_single \
   --aug_min_length 0 \
+  --lamb 0.4 \
+  --pu_type dual_softmax_dyn_dtrun \
+  --prior 0.2 \
+  --len_thres 55 \
   --clean 0 \
   --quick_val 0 \
   --log-dir outputs/multimodel_v2_balance

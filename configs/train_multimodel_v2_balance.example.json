@@ -22,5 +22,5 @@
   "pu_type": "dual_softmax_dyn_dtrun",
   "prior": 0.2,
   "length_threshold": 55,
-  "note": "This file records the original balanced experiment parameters with public placeholder paths. The public standalone training script has not been implemented yet, so this config is not directly runnable at this stage."
+  "note": "This file records the original balanced experiment parameters with public placeholder paths. It can be launched through src/train_from_config.py, but the placeholder model and data paths must be replaced with real local files before non-dry-run training."
 }
