@@ -83,6 +83,10 @@ def save_group_metrics(df, output_path, label_column, group_columns):
     return saved_paths
 
 
+def available_group_columns(df, group_columns):
+    return [column for column in group_columns if column in df.columns]
+
+
 def main():
     args = parse_args()
     input_path = Path(args.input)
@@ -155,9 +159,12 @@ def main():
             if metrics["ai_total"]:
                 print(f"ai recall: {metrics['ai_recall']:.6f} ({metrics['ai_detected']}/{metrics['ai_total']})")
 
-            group_columns = [column.strip() for column in args.group_columns.split(",") if column.strip()]
+            requested_group_columns = [column.strip() for column in args.group_columns.split(",") if column.strip()]
+            group_columns = available_group_columns(df, requested_group_columns)
             if group_columns:
                 save_group_metrics(df, output_path, args.label_column, group_columns)
+    else:
+        print(f"label column not found: {args.label_column}; supervised metrics were skipped.")
 
     preview_columns = [
         column
