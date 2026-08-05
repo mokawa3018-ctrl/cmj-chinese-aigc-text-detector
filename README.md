@@ -336,14 +336,28 @@ AI召回率约：81.83%
 
 ## 模型下载
 
-模型权重与 ONNX 版本已发布至 Hugging Face：
+模型权重与 ONNX 版本已发布至 Hugging Face 和 ModelScope：
 
+```text
+Hugging Face:
 https://huggingface.co/mokawa3018/cmj-chinese-aigc-text-detector
 
-下载完整模型：
+ModelScope:
+https://modelscope.cn/models/mokawa3018/cmj-chinese-aigc-text-detector
+```
+
+从 Hugging Face 下载完整模型：
 
 ```bash
 hf download mokawa3018/cmj-chinese-aigc-text-detector \
+  --local-dir models/cmj-chinese-aigc-text-detector
+```
+
+从 ModelScope 下载完整模型：
+
+```bash
+ms-hub download mokawa3018/cmj-chinese-aigc-text-detector \
+  --repo-type model \
   --local-dir models/cmj-chinese-aigc-text-detector
 ```
 
