@@ -60,11 +60,9 @@ aigc-text-detection-evaluation/
 
 ## 环境安装
 
-仓库尚未创建远程地址时，请将 `<YOUR_GITHUB_REPOSITORY_URL>` 替换为实际地址。
-
 ```bash
-git clone <YOUR_GITHUB_REPOSITORY_URL>
-cd aigc-text-detection-evaluation
+git clone https://github.com/mokawa3018-ctrl/cmj-chinese-aigc-text-detector.git
+cd cmj-chinese-aigc-text-detector
 python -m venv .venv
 ```
 
@@ -121,6 +119,25 @@ python src/check_data.py --train data/samples/sample_train.csv --validation data
 
 `data/samples/` 中的 CSV 是全新合成数据，只用于演示字段结构、数据校验和最小流程冒烟测试，不能复现实验指标。
 
+## 单条文本预测
+
+`src/predict_text.py` 使用 Hugging Face PyTorch 模型对单条文本进行二分类预测。
+
+```bash
+python src/predict_text.py \
+  --model-path models/cmj-chinese-aigc-text-detector \
+  --text "这是一段需要检测的中文文本。" \
+  --device auto
+```
+
+输出字段：
+
+- `predicted_label`：预测标签，`0=human`，`1=AI`
+- `human_probability`：人工文本概率
+- `ai_probability`：AI 文本概率
+
+`--device` 支持 `auto`、`cpu` 和 `cuda`。如果本机没有 CUDA，建议使用 `auto` 或 `cpu`。
+
 ## PyTorch 批量预测
 
 `src/predict_csv.py` 使用 Hugging Face PyTorch 模型目录进行 CSV 批量预测。
@@ -146,9 +163,11 @@ python src/predict_csv.py \
 - `prob_human`
 - `prob_ai`
 - 若存在标签列，则输出 `correct`
-- 整体准确率、人工误检率、AI 召回率
-- 按 `generator` 聚合统计
-- 按 `source` 聚合统计
+- 若存在标签列，则计算整体准确率、人工误检率、AI 召回率
+- 若同时存在标签列和 `generator` 列，则输出按 `generator` 聚合统计
+- 若同时存在标签列和 `source` 列，则输出按 `source` 聚合统计
+
+没有 `label` 列的 CSV 也可以预测；此时脚本只保存预测标签和概率，不计算监督指标。
 
 ## ONNX 批量预测
 
@@ -165,7 +184,7 @@ python src/predict_csv_onnx.py \
   --max-length 512
 ```
 
-该脚本要求输入 CSV 包含 `answer` 和 `label` 列。
+该脚本要求输入 CSV 包含 `answer` 列。`label` 列可选：存在时计算准确率、人工误检率、AI 召回率，并在 `generator` 或 `source` 列存在时输出分组统计；不存在时只保存预测标签和概率。
 
 ## 模型训练
 
