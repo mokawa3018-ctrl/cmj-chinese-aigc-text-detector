@@ -121,6 +121,28 @@ python src/check_data.py --train data/samples/sample_train.csv --validation data
 
 `data/samples/` 中的 CSV 是全新合成数据，只用于演示字段结构、数据校验和最小流程冒烟测试，不能复现实验指标。
 
+## 轻量 CI 与本地测试
+
+本仓库包含基础自动化测试，只覆盖 `src/check_data.py`、`src/train_from_config.py` 和 `tests/`。CI 不安装深度学习依赖，不下载模型或数据，也不会执行训练、推理或 ONNX 导出。
+
+Windows PowerShell:
+
+```powershell
+python -m pip install -r requirements-ci.txt
+python -m compileall src tests
+ruff check src/check_data.py src/train_from_config.py tests
+python -m pytest -q
+```
+
+Linux/macOS:
+
+```bash
+python -m pip install -r requirements-ci.txt
+python -m compileall src tests
+ruff check src/check_data.py src/train_from_config.py tests
+python -m pytest -q
+```
+
 ## PyTorch 批量预测
 
 `src/predict_csv.py` 使用 Hugging Face PyTorch 模型目录进行 CSV 批量预测。
