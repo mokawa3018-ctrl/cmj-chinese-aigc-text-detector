@@ -34,7 +34,7 @@ jobs:
         run: python -m compileall src tests
 
       - name: Lint lightweight scripts
-        run: ruff check src/check_data.py src/train_from_config.py tests
+        run: ruff check src/check_data.py src/train_from_config.py src/evaluation.py src/analyze_errors.py src/predict_csv.py src/predict_csv_onnx.py src/predict_text.py src/export_onnx.py src/check_onnx.py tests
 
       - name: Run tests
         run: python -m pytest -q

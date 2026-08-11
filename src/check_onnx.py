@@ -12,6 +12,21 @@ def softmax(x):
     return e / e.sum(axis=-1, keepdims=True)
 
 
+def compare_outputs(pt_logits, onnx_logits):
+    """Return numerical and label-agreement checks for matching model outputs."""
+    pt_probs = softmax(pt_logits)
+    onnx_probs = softmax(onnx_logits)
+    pt_labels = np.argmax(pt_probs, axis=-1)
+    onnx_labels = np.argmax(onnx_probs, axis=-1)
+    return {
+        "max_abs_logits_diff": float(np.max(np.abs(pt_logits - onnx_logits))),
+        "max_abs_probs_diff": float(np.max(np.abs(pt_probs - onnx_probs))),
+        "labels_match": bool(np.array_equal(pt_labels, onnx_labels)),
+        "pt_probs": pt_probs,
+        "onnx_probs": onnx_probs,
+    }
+
+
 def parse_args():
     parser = argparse.ArgumentParser(description="Compare PyTorch and ONNX outputs for the same model.")
     parser.add_argument("--pt-model-dir", required=True, help="Local HuggingFace PyTorch model directory.")
@@ -62,11 +77,13 @@ def main():
         },
     )[0]
 
-    pt_probs = softmax(pt_logits)
-    onnx_probs = softmax(onnx_logits)
+    comparison = compare_outputs(pt_logits, onnx_logits)
+    pt_probs = comparison["pt_probs"]
+    onnx_probs = comparison["onnx_probs"]
 
-    print("max_abs_logits_diff:", float(np.max(np.abs(pt_logits - onnx_logits))))
-    print("max_abs_probs_diff:", float(np.max(np.abs(pt_probs - onnx_probs))))
+    print("max_abs_logits_diff:", comparison["max_abs_logits_diff"])
+    print("max_abs_probs_diff:", comparison["max_abs_probs_diff"])
+    print("prediction_labels_match:", comparison["labels_match"])
 
     for i, text in enumerate(texts):
         print("\ntext:", text)

@@ -14,6 +14,29 @@ def parse_args():
     return parser.parse_args()
 
 
+def export_model(model, encoded, onnx_path):
+    """Export with the exact public input/output names and dynamic axes."""
+    torch.onnx.export(
+        model,
+        (
+            encoded["input_ids"],
+            encoded["attention_mask"],
+            encoded["token_type_ids"],
+        ),
+        onnx_path,
+        input_names=["input_ids", "attention_mask", "token_type_ids"],
+        output_names=["logits"],
+        dynamic_axes={
+            "input_ids": {0: "batch_size", 1: "sequence_length"},
+            "attention_mask": {0: "batch_size", 1: "sequence_length"},
+            "token_type_ids": {0: "batch_size", 1: "sequence_length"},
+            "logits": {0: "batch_size"},
+        },
+        opset_version=14,
+        do_constant_folding=True,
+    )
+
+
 def main():
     args = parse_args()
     os.makedirs(args.output_dir, exist_ok=True)
@@ -34,25 +57,7 @@ def main():
     onnx_path = os.path.join(args.output_dir, "model.onnx")
 
     with torch.no_grad():
-        torch.onnx.export(
-            model,
-            (
-                encoded["input_ids"],
-                encoded["attention_mask"],
-                encoded["token_type_ids"],
-            ),
-            onnx_path,
-            input_names=["input_ids", "attention_mask", "token_type_ids"],
-            output_names=["logits"],
-            dynamic_axes={
-                "input_ids": {0: "batch_size", 1: "sequence_length"},
-                "attention_mask": {0: "batch_size", 1: "sequence_length"},
-                "token_type_ids": {0: "batch_size", 1: "sequence_length"},
-                "logits": {0: "batch_size"},
-            },
-            opset_version=14,
-            do_constant_folding=True,
-        )
+        export_model(model, encoded, onnx_path)
 
     for name in [
         "config.json",

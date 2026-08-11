@@ -42,6 +42,8 @@ aigc-text-detection-evaluation/
 │  ├─ export_onnx.py
 │  ├─ predict_csv.py
 │  ├─ predict_csv_onnx.py
+│  ├─ evaluation.py
+│  ├─ analyze_errors.py
 │  └─ train_from_config.py
 ├─ tests/
 ├─ LICENSE
@@ -121,14 +123,14 @@ python src/check_data.py --train data/samples/sample_train.csv --validation data
 
 ## 轻量 CI 与本地测试
 
-本仓库包含基础自动化测试，只覆盖 `src/check_data.py`、`src/train_from_config.py` 和 `tests/`。CI 不安装深度学习依赖，不下载模型或数据，也不会执行训练、推理或 ONNX 导出。
+本仓库包含轻量自动化测试，覆盖数据检查、配置启动器、公共二分类指标、CSV 推理输入校验、错误分析，以及 ONNX 导出参数和一致性比较逻辑。CI 不安装深度学习完整依赖，不下载模型或数据，也不会执行真实训练、真实模型推理或实际 ONNX 导出。
 
 Windows PowerShell:
 
 ```powershell
 python -m pip install -r requirements-ci.txt
 python -m compileall src tests
-ruff check src/check_data.py src/train_from_config.py tests
+ruff check src/check_data.py src/train_from_config.py src/evaluation.py src/analyze_errors.py src/predict_csv.py src/predict_csv_onnx.py src/predict_text.py src/export_onnx.py src/check_onnx.py tests
 python -m pytest -q
 ```
 
@@ -137,7 +139,7 @@ Linux/macOS:
 ```bash
 python -m pip install -r requirements-ci.txt
 python -m compileall src tests
-ruff check src/check_data.py src/train_from_config.py tests
+ruff check src/check_data.py src/train_from_config.py src/evaluation.py src/analyze_errors.py src/predict_csv.py src/predict_csv_onnx.py src/predict_text.py src/export_onnx.py src/check_onnx.py tests
 python -m pytest -q
 ```
 
@@ -202,11 +204,31 @@ python src/predict_csv_onnx.py \
   --onnx-dir models/onnx_model \
   --input data/private/eval.csv \
   --output results/predictions/onnx_eval.csv \
+  --text-column answer \
+  --label-column label \
+  --group-columns generator,source \
   --batch-size 16 \
   --max-length 512
 ```
 
-该脚本要求输入 CSV 包含 `answer` 列。`label` 列可选：存在时计算准确率、人工误检率、AI 召回率，并在 `generator` 或 `source` 列存在时输出分组统计；不存在时只保存预测标签和概率。
+该脚本默认读取 `answer`，也可通过 `--text-column` 指定其他文本列。`label` 列可选：存在时计算准确率、人工误检率、AI 召回率，并在指定分组列存在时输出分组统计；不存在时只保存预测标签和概率。
+
+## 自动错误分析
+
+`src/analyze_errors.py` 读取已生成的预测 CSV，不加载模型。它会保存整体指标、按 `generator` 和 `source` 的指标、固定文本长度段指标，以及按置信度排序的误检和漏检样本。
+
+```bash
+python src/analyze_errors.py \
+  --input results/predictions/eval.csv \
+  --output-dir results/error_analysis \
+  --label-column label \
+  --prediction-column pred_label \
+  --probability-column prob_ai \
+  --text-column answer \
+  --group-columns generator,source
+```
+
+输出包括：`overall_metrics.csv`、`metrics_by_generator.csv`、`metrics_by_source.csv`、`metrics_by_length.csv`、`false_positives.csv` 和 `false_negatives.csv`。长度段固定为 0-50、51-100、101-200、201-500 和 500+ 字。无标签 CSV 可以用于批量预测，但不能用于此监督错误分析。
 
 ## 模型训练
 
